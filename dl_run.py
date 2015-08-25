@@ -57,7 +57,7 @@ for tag in tags:
 	if f.checkPos(tag[1]):
 		if word in model:
 			word_stem = st.stem(word)  
-			top_words = model.most_similar(positive=[word], topn = 10)
+			top_words = model.most_similar(positive=[word], topn = 20)
 			candidate_list = [w[0] for w in top_words]
 			freq_list = [fdist[w] for w in candidate_list]
 			c_f_list = zip(candidate_list, freq_list)
@@ -69,14 +69,16 @@ for tag in tags:
 				if not f.freq_diff(word_freq, w[1]):  ## break for loop if candidate word frequency does not exceed the word frequency by a threshold 
 					break
 				if st.stem(w[0]) != word_stem and f.samePos(word, w[0]): ##exclude morphological derivations and same pos
-					if w[0] in synonmys:
-						word = w[0]
-					else:
-						for syn in synonmys:
-							if st.stem(w[0]) == st.stem(syn):
-								word = w[0]
+					word = w[0]  ### do not use wordnet
+					# if w[0] in synonmys:
+					# 	word = w[0]
+					# else:
+					# 	for syn in synonmys:
+					# 		if st.stem(w[0]) == st.stem(syn):
+					# 			word = w[0]
 
 	res = res + word + ' '	
 	
 print s
+print "\n"
 print res
