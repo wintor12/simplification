@@ -8,6 +8,7 @@ import numpy as np
 import gensim, logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import functions as f
+from gensim.models.word2vec import Word2Vec
 
 
 # getTopwords()	
@@ -41,10 +42,15 @@ import functions as f
 s = f.readDoc()
 setting = f.readSetting()
 model_path = setting[0]
-model = gensim.models.Word2Vec.load_word2vec_format(model_path, binary=True)
+model = Word2Vec.load_word2vec_format("/home/tong/Documents/python/GoogleNews-vectors-negative300.bin.gz", binary = True)
 
 news_text = brown.words()
-fdist = nltk.FreqDist(w.lower() for w in news_text)
+emma = nltk.corpus.gutenberg.words()
+r = nltk.corpus.reuters.words()
+corpus = emma + news_text
+corpus += r 
+fdist = nltk.FreqDist(w.lower() for w in corpus)
+
 
 res = ''
 st = LancasterStemmer()
@@ -63,7 +69,7 @@ for tag in tags:
 			c_f_list = zip(candidate_list, freq_list)
 			ordered_list = sorted(c_f_list, key=lambda c_f_list:c_f_list[1], reverse=True)
 			word_freq = fdist[word]
-			synonmys = f.getSynonmys(word)  ## get synonmys from wordnet
+#			synonmys = f.getSynonmys(word)  ## get synonmys from wordnet
 			# print synonmys
 			for w in ordered_list:
 				if not f.freq_diff(word_freq, w[1]):  ## break for loop if candidate word frequency does not exceed the word frequency by a threshold 
@@ -76,7 +82,6 @@ for tag in tags:
 					# 	for syn in synonmys:
 					# 		if st.stem(w[0]) == st.stem(syn):
 					# 			word = w[0]
-
 	res = res + word + ' '	
 	
 print s
